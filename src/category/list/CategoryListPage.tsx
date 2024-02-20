@@ -1,80 +1,106 @@
-import { Button, List, message } from "antd";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {Button, Popconfirm, Table} from "antd";
+import {Link} from "react-router-dom";
+import {ColumnsType} from "antd/es/table";
+
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import {useEffect, useState} from "react";
+import {APP_ENV} from "../../env";
 import http_common from "../../http_common.ts";
-
-interface Category {
-    id: number;
-    name: string;
-    description: string;
-    // Add other fields as needed
-}
-
-const CategoryItem: React.FC<{ category: Category, onDelete: (id: number) => void }> = ({ category, onDelete }) => {
-    const handleDelete = () => {
-        onDelete(category.id);
-    };
-
-    return (
-        <List.Item
-            key={category.id}
-            actions={[
-                <Link to={`/category/edit/${category.id}`}><Button type="link">Edit</Button></Link>,
-                <Button type="primary" onClick={handleDelete}>Delete</Button>
-            ]}
-        >
-            <div>
-                <h3>{category.name}</h3>
-                <p>{category.description}</p>
-                {/* Render your photo here */}
-                {/* <img src={category.photo} alt={category.name} /> */}
-            </div>
-        </List.Item>
-    );
-};
+import {ICategoryItem} from "../create/types.ts";
 
 const CategoryListPage = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
+    const imgURL = APP_ENV.BASE_URL + "/uploading/150_";
+
+    const columns: ColumnsType<ICategoryItem> = [
+        {
+            title: 'Id',
+            dataIndex: 'id',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+        },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            render: (imageName: string) => (
+                <img src={`${imgURL}${imageName}`} alt="Category Image"/>
+            ),
+        },
+        {
+            title: 'Edit',
+            dataIndex: 'edit',
+            render: (_, record) => (
+                <Link to={`/category/edit/${record.id}`}>
+                    <Button type="primary" icon={<EditOutlined/>}>
+                        Змінити
+                    </Button>
+                </Link>
+
+            ),
+        },
+        {
+            title: 'Delete',
+            dataIndex: 'delete',
+            render: (_, record) => (
+
+                <Popconfirm
+                    title="Are you sure to delete this category?"
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button icon={<DeleteOutlined/>}>
+                        Delete
+                    </Button>
+                </Popconfirm>
+
+            ),
+        },
+    ];
+
+    const [data, setData] = useState<ICategoryItem[]>([]);
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchData = async () => {
             try {
                 const response = await http_common.get("/api/categories");
-                setCategories(response.data); // Assuming response.data contains the list of categories
+                console.log("response.data", response.data)
+                setData(response.data);
             } catch (error) {
-                console.error("Error fetching categories:", error);
+                console.error('Error fetching categories:', error);
             }
         };
 
-        fetchCategories();
+        fetchData();
     }, []);
 
-    const handleDeleteCategory = async (id: number) => {
+    const handleDelete = async (categoryId: number) => {
         try {
-            // You can implement the delete logic here
-            // await http_common.delete(`/api/categories/${id}`);
-            // Update the categories state after deletion
-            setCategories(prevCategories => prevCategories.filter(category => category.id !== id));
-            message.success('Category deleted successfully!');
+            await http_common.delete(`/api/categories/${categoryId}`);
+            setData(data.filter(x => x.id != categoryId));
         } catch (error) {
-            console.error("Error deleting category:", error);
-            message.error('Failed to delete category!');
+            throw new Error(`Error: ${error}`);
         }
     };
 
     return (
         <>
             <h1>Список категорій</h1>
+
+
+            <Table columns={columns} rowKey={"id"} dataSource={data} size="middle"/>
+
+
             <Link to={"/category/create"}>
-                <Button size={"large"}>Додати</Button>
+                <Button type="primary" style={{margin: '5px'}}>
+                    ADD +
+                </Button>
             </Link>
-            <List
-                itemLayout="vertical"
-                dataSource={categories}
-                renderItem={category => (
-                    <CategoryItem key={category.id} category={category} onDelete={handleDeleteCategory} />
-                )}
-            />
         </>
     );
 }
