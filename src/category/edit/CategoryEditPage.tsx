@@ -4,7 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import {UploadChangeParam} from "antd/es/upload";
 import {PlusOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
-import {ICategoryEdit, ICategoryItem, IUploadedFile} from "../create/types.ts";
+import {ICategoryEdit, ICategoryItem, IUploadedFile} from "../types.ts";
 import http_common from "../../http_common.ts";
 import {APP_ENV} from "../../env";
 
