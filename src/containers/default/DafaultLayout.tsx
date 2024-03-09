@@ -1,7 +1,7 @@
 import {Breadcrumb, Layout, theme} from "antd";
 import DefaultHeader from "./DefaultHeader";
+import DefaultSider from "./DefaultSider";
 import {Outlet} from "react-router-dom";
-import DefaultSider from "./DefaultSlider.tsx";
 
 const { Content, Footer} = Layout;
 
@@ -9,7 +9,6 @@ const DefaultLayout = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    //const navigate = useNavigate();
     return (
         <Layout>
             <DefaultHeader/>
