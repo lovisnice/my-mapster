@@ -17,7 +17,7 @@ const ProductCreatePage = () => {
     useEffect(() => {
         http_common.get<ISelectItem[]>("/api/categories/selectList")
             .then(resp=> {
-                //console.log("list categories", resp.data);
+                console.log("list categories", resp.data);
                 setCategories(resp.data);
             });
     },[]);
