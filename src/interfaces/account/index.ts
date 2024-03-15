@@ -10,12 +10,27 @@ export interface IUser{
     email: string,
     image: string,
 }
+
+export interface IUserRole{
+    name: string,
+    email: string,
+    image: string,
+    roles: string[]
+}
 export interface IAccountState {
     user: IUser | null,
     token: string | null,
     isLogin: boolean,
     status: Status;
-}export interface IRegister {
+}
+
+export interface IAccountStateRole {
+    user: IUserRole | null,
+    token: string | null,
+    isLogin: boolean,
+    status: Status;
+}
+export interface IRegister {
     email: string,
     password: string,
     confirmPassword: string,

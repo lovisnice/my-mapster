@@ -1,11 +1,11 @@
-import {Button, Col, Pagination, Row} from "antd";
-import {Link, useSearchParams} from "react-router-dom";
-import {ICategorySearch, IGetCategories} from "../types.ts";
+import {Button, Col, Form, Input, Pagination, Row} from "antd";
+import {useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import http_common from "../../http_common.ts";
 import CategoryCard from "./CategoryCard.tsx";
+import {ICategorySearch, IGetCategories} from "../../admin/category/types.ts";
 
-const CategoryListPage = () => {
+const HomePage = () => {
 
     const [data, setData] = useState<IGetCategories>({
         content: [],
@@ -21,6 +21,12 @@ const CategoryListPage = () => {
         page: Number(searchParams.get('page')) || 1,
         size: Number(searchParams.get('size')) || 1
     });
+
+    const [form] = Form.useForm<ICategorySearch>();
+
+    const onSubmit = async (values: ICategorySearch) => {
+        findCategories({...formParams, page: 1, name: values.name});
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,7 +69,7 @@ const CategoryListPage = () => {
 
     const updateSearchParams = (params : ICategorySearch) =>{
         for (const [key, value] of Object.entries(params)) {
-            if (value !== undefined && value !== 0) {
+            if (value !== undefined && value !== 0 && value!="") {
                 searchParams.set(key, value);
             } else {
                 searchParams.delete(key);
@@ -72,14 +78,39 @@ const CategoryListPage = () => {
         setSearchParams(searchParams);
     };
 
+
     return (
         <>
-            <h1>Список категорій</h1>
-            <Link to={"/category/create"}>
-                <Button type="primary" style={{margin: '5px'}}>
-                    ADD +
-                </Button>
-            </Link>
+            <Row gutter={16}>
+                <Form form={form}
+                      onFinish={onSubmit}
+                      layout={"vertical"}
+                      style={{
+                          minWidth: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          padding: 20,
+                      }}
+                >
+                    <Form.Item
+                        label="Назва"
+                        name="name"
+                        htmlFor="name"
+                    >
+                        <Input autoComplete="name"/>
+                    </Form.Item>
+
+                    <Row style={{display: 'flex', justifyContent: 'center'}}>
+                        <Button style={{margin: 10}} type="primary" htmlType="submit">
+                            Пошук
+                        </Button>
+                        <Button style={{margin: 10}} htmlType="button" onClick={() =>{ }}>
+                            Скасувати
+                        </Button>
+                    </Row>
+                </Form>
+            </Row>
 
             <Row gutter={16}>
                 <Col span={24}>
@@ -92,9 +123,9 @@ const CategoryListPage = () => {
                             )
                         )}
                     </Row>
-
                 </Col>
             </Row>
+
             <Row style={{width: '100%', display: 'flex', marginTop: '25px', justifyContent: 'center'}}>
                 <Pagination
                     showTotal={(total, range) => {
@@ -113,4 +144,4 @@ const CategoryListPage = () => {
     );
 }
 
-export default CategoryListPage;
+export default HomePage;

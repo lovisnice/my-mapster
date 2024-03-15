@@ -1,7 +1,7 @@
 import {AnyAction, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {jwtDecode} from 'jwt-decode';
 import {RejectedAction} from "../../utils/types/redux";
-import {IAccountState, IUser} from "../../interfaces/account";
+import { IAccountStateRole, IUserRole} from "../../interfaces/account";
 import {addLocalStorage, deleteLocalStorage} from "../../utils/storage/localStorageUtils.ts";
 import {Status} from "../../utils/enums";
 import {login, register} from "./accounts.actions.ts";
@@ -9,21 +9,22 @@ import {login, register} from "./accounts.actions.ts";
 function isRejectedAction(action: AnyAction): action is RejectedAction {
     return action.type.endsWith('/rejected');
 }
-const updateUserState = (state: IAccountState, token: string): void => {
-    const { name, email, image } = jwtDecode<IUser>(token);
+const updateUserState = (state: IAccountStateRole, token: string): void => {
+    const { name, email, image , roles  } = jwtDecode<IUserRole>(token);
     state.user = {
         name,
         email,
         image,
+        roles,
     };
     state.token = token;
     state.isLogin = true;
-
     addLocalStorage('authToken', token);
+    addLocalStorage('roles', roles.toLocaleString());
 };
 
 //state - нашого редюсера
-const initialState: IAccountState = {
+const initialState: IAccountStateRole = {
     user: null,
     token: null,
     isLogin: false,

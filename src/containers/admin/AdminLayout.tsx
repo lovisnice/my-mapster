@@ -1,20 +1,41 @@
 import {Breadcrumb, Layout, theme} from "antd";
-import DefaultHeader from "./DefaultHeader";
-import DefaultSider from "./DefaultSider";
-import {Outlet} from "react-router-dom";
-import "./DefaultLayout.css"
+import AdminHeader from "./AdminHeader";
+import AdminSider from "./AdminSider";
+import {Outlet, useNavigate} from "react-router-dom";
+import "./AdminLayout.css"
+import {useAppSelector} from "../../hooks/redux";
+import {useEffect} from "react";
 
 const { Content, Footer} = Layout;
 
-const DefaultLayout = () => {
+const AdminLayout = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    const {isLogin, user} = useAppSelector(state => state.account);
+
+    const navigate = useNavigate();
+
+    let isAdmin = false;
+
+    user?.roles.forEach(role=> {
+        if (role.toLowerCase().includes('admin'))
+            isAdmin=true;
+    });
+
+    useEffect(() => {
+        if (!isLogin )
+            navigate("/login");
+        else if(!isAdmin)
+            navigate("/");
+    }, []);
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <DefaultSider/>
+            <AdminSider/>
             <Layout>
-                <DefaultHeader/>
+                <AdminHeader/>
                 <Content style={{ padding: '0 48px' }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>Home</Breadcrumb.Item>
@@ -24,9 +45,8 @@ const DefaultLayout = () => {
                     <Layout
                         style={{ padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG }}
                     >
-
                         <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                            <Outlet />
+                            {(isLogin && isAdmin) && <Outlet />}
                         </Content>
                     </Layout>
                 </Content>
@@ -36,4 +56,4 @@ const DefaultLayout = () => {
     )
 }
 
-export default DefaultLayout;
+export default AdminLayout;

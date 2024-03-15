@@ -8,9 +8,10 @@ import {APP_ENV} from "../../env";
 
 const {Header} = Layout;
 
-const DefaultHeader = () => {
+const AdminHeader = () => {
     const location = useLocation();
     const navigate = useNavigate();
+
     const dispatch = useAppDispatch();
     const {isLogin, user} = useAppSelector(state => state.account);
 
@@ -62,4 +63,4 @@ const DefaultHeader = () => {
     );
 };
 
-export default DefaultHeader;
+export default AdminHeader;
