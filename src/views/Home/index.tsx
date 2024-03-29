@@ -105,9 +105,9 @@ const HomePage = () => {
                         <Button style={{margin: 10}} type="primary" htmlType="submit">
                             Пошук
                         </Button>
-                        <Button style={{margin: 10}} htmlType="button" onClick={() =>{ }}>
-                            Скасувати
-                        </Button>
+                        {/*<Button style={{margin: 10}} htmlType="button" onClick={() =>{ }}>*/}
+                        {/*    Скасувати*/}
+                        {/*</Button>*/}
                     </Row>
                 </Form>
             </Row>

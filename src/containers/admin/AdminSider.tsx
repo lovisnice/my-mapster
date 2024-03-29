@@ -28,7 +28,7 @@ const items: MenuItem[] = [
     getItem(<Link to={"/admin"} >Категорії</Link>, '1', <PieChartOutlined />),
     getItem(<Link to={"/admin/product"}>Товари</Link>, '2', <DesktopOutlined />),
     getItem(<Link to={"/"} >Типова сторінка</Link>, '3', <PieChartOutlined />),
-
+    getItem(<Link to={"/"} >Admin panel</Link>, '4', <PieChartOutlined />),
 ];
 
 const AdminSider = () => {

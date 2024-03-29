@@ -6,6 +6,7 @@ import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Link} from "react-router-dom";
 import {APP_ENV} from "../../env";
 import {ICategoryItem} from "../../admin/category/types.ts";
+import {getLocalStorage} from "../../utils/storage/localStorageUtils.ts";
 
 const { Title } = Typography;
 
@@ -17,7 +18,7 @@ interface ICategoryCardProps {
 const CategoryCard: React.FC<ICategoryCardProps> = (props) => {
     const {item, handleDelete} = props;
     const {id, name, description, image} = item;
-
+    const admin = getLocalStorage('roles');
 
     return (
         <>
@@ -35,9 +36,9 @@ const CategoryCard: React.FC<ICategoryCardProps> = (props) => {
                     }
                     actions={[
                         <Link to={`/category/edit/${id}`}>
-                            <Button type="primary" icon={<EditOutlined/>}>
-                                Змінить
-                            </Button>
+                            {admin === 'admin' && (<Button type="primary" icon={<EditOutlined/>}>
+                                Змінити
+                            </Button>)}
                         </Link>,
 
                         <Popconfirm
@@ -46,9 +47,10 @@ const CategoryCard: React.FC<ICategoryCardProps> = (props) => {
                             okText="Yes"
                             cancelText="No"
                         >
-                            <Button icon={<DeleteOutlined/>}>
+                            {admin === 'admin' && (<Button icon={<DeleteOutlined/>}>
                                 Delete
                             </Button>
+                            )}
                         </Popconfirm>
                     ]}
                 >
